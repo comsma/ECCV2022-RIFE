@@ -52,7 +52,7 @@ class Model:
 
     def save_model(self, path, rank=0):
         if rank == 0:
-            torch.save(self.flownet.state_dict(), '{}/flownet.pkl'.format(path))
+            torch.save(self.flownet.state_dict(), '/rife/train_log/flownet.pkl'.format(path))
 
     def inference(self, img0, img1, scale=1.0):
         imgs = torch.cat((img0, img1), 1)
