@@ -10,13 +10,13 @@ WORKDIR /rife
 COPY .. .
 RUN pip3 install -r requirements.txt
 
-ADD inference_img /usr/local/bin/inference_img
+ADD docker/inference_img /usr/local/bin/inference_img
 RUN chmod +x /usr/local/bin/inference_img
-ADD inference_video /usr/local/bin/inference_video
+ADD docker/inference_video /usr/local/bin/inference_video
 RUN chmod +x /usr/local/bin/inference_video
 
 # add pre-trained models
-COPY ../train_log /rife/train_log
+COPY train_log /rife/train_log
 
 WORKDIR /host
 ENTRYPOINT ["/bin/bash"]
