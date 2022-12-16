@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.9
 
 # install deps
 RUN apt-get update && apt-get -y install \
@@ -16,9 +16,9 @@ ADD docker/inference_video /usr/local/bin/inference_video
 RUN chmod +x /usr/local/bin/inference_video
 
 # add pre-trained models
-COPY train_log /rife/train_log
+COPY train_log ./train_log
 
-WORKDIR /host
+WORKDIR /rife
 ENTRYPOINT ["/bin/bash"]
 
 ENV NVIDIA_DRIVER_CAPABILITIES all

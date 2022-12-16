@@ -1,4 +1,3 @@
-benchmark
-venv
+benchmark/*
+venv/*
 Colab_demo.ipynb
-model

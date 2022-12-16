@@ -11,7 +11,8 @@ import torch.nn.functional as F
 from model.loss import *
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+
+
 class Model:
     def __init__(self, local_rank=-1):
         self.flownet = IFNet()
@@ -42,22 +43,23 @@ class Model:
                 }
             else:
                 return param
+
         if rank <= 0:
             if torch.cuda.is_available():
-                self.flownet.load_state_dict(convert(torch.load('{}/flownet.pkl'.format(path))))
+                self.flownet.load_state_dict(convert(torch.load('/rife/train_log/flownet.pkl'.format(path))))
             else:
-                self.flownet.load_state_dict(convert(torch.load('{}/flownet.pkl'.format(path), map_location ='cpu')))
-        
+                self.flownet.load_state_dict(convert(torch.load('/rife/train_log/flownet.pkl'.format(path), map_location='cpu')))
+
     def save_model(self, path, rank=0):
         if rank == 0:
-            torch.save(self.flownet.state_dict(),'{}/flownet.pkl'.format(path))
+            torch.save(self.flownet.state_dict(), '{}/flownet.pkl'.format(path))
 
     def inference(self, img0, img1, scale=1.0):
         imgs = torch.cat((img0, img1), 1)
-        scale_list = [4/scale, 2/scale, 1/scale]
+        scale_list = [4 / scale, 2 / scale, 1 / scale]
         flow, mask, merged = self.flownet(imgs, scale_list)
         return merged[2]
-    
+
     def update(self, imgs, gt, learning_rate=0, mul=1, training=True, flow_gt=None):
         for param_group in self.optimG.param_groups:
             param_group['lr'] = learning_rate
@@ -70,7 +72,7 @@ class Model:
         scale = [4, 2, 1]
         flow, mask, merged = self.flownet(torch.cat((imgs, gt), 1), scale=scale, training=training)
         loss_l1 = (merged[2] - gt).abs().mean()
-        loss_smooth = self.sobel(flow[2], flow[2]*0).mean()
+        loss_smooth = self.sobel(flow[2], flow[2] * 0).mean()
         # loss_vgg = self.vgg(merged[2], gt)
         if training:
             self.optimG.zero_grad()
@@ -85,4 +87,4 @@ class Model:
             'loss_l1': loss_l1,
             'loss_cons': loss_cons,
             'loss_smooth': loss_smooth,
-            }
+        }
