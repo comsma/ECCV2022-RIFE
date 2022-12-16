@@ -8,13 +8,14 @@ from torch.nn import functional as F
 import warnings
 import _thread
 import skvideo.io
-from queue import Queue
+from queue import Queue, Empty
 from model.pytorch_msssim import ssim_matlab
 
 warnings.filterwarnings("ignore")
 
 def transferAudio(sourceVideo, targetVideo):
     import shutil
+    import moviepy.editor
     tempAudioFileName = "./temp/audio.mkv"
 
     # split audio from original video file and store in "temp" directory
@@ -85,11 +86,22 @@ if torch.cuda.is_available():
         torch.set_default_tensor_type(torch.cuda.HalfTensor)
 
 try:
-    from train_log.RIFE_HDv3 import Model
-    model = Model()
-    model.load_model(args.modelDir, -1)
-    print("Loaded v3.x HD model.")
-
+    try:
+        try:
+            from model.RIFE_HDv2 import Model
+            model = Model()
+            model.load_model(args.modelDir, -1)
+            print("Loaded v2.x HD model.")
+        except:
+            from train_log.RIFE_HDv3 import Model
+            model = Model()
+            model.load_model(args.modelDir, -1)
+            print("Loaded v3.x HD model.")
+    except:
+        from model.RIFE_HD import Model
+        model = Model()
+        model.load_model(args.modelDir, -1)
+        print("Loaded v1.x HD model")
 except:
     from model.RIFE import Model
     model = Model()
