@@ -18,7 +18,7 @@ RUN chmod +x /usr/local/bin/inference_video
 # add pre-trained models
 COPY train_log ./train_log
 
-WORKDIR /rife
+WORKDIR /host
 ENTRYPOINT ["/bin/bash"]
 
 ENV NVIDIA_DRIVER_CAPABILITIES all
